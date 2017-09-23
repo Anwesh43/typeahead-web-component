@@ -1,3 +1,4 @@
+const selectColor = '#BDBDBD'
 class TypeaheadComponent extends HTMLElement  {
     constructor() {
         super()
@@ -51,24 +52,39 @@ class TypeaheadComponent extends HTMLElement  {
         li.style.listStyleType = 'none'
         li.style.cursor = 'pointer'
     }
+    selectValue(item) {
+        this.text.value = item
+        this.renderList([])
+        if(this.onSelected) {
+            this.onSelected(item)
+        }
+    }
+    hoverBackground(index) {
+        const li = this.ul.children[index]
+        console.log(li)
+        if(li.className == 'hover') {
+            li.className = ''
+            li.style.background = this.ul.style.background
+        }
+        else {
+            li.className = 'hover'
+            li.style.background = selectColor
+        }
+    }
     renderList(items) {
         this.ul.innerHTML = ""
-        items.forEach((item)=>{
+        items.forEach((item,index)=>{
             const li = document.createElement('li')
             li.innerHTML = `<span style="margin-left:5%;">${item}</span>`
             li.onclick = (event) => {
-                this.text.value = item
-                this.renderList([])
-                if(this.onSelected) {
-                    this.onSelected(item)
-                }
+                this.selectValue(item)
             }
             this.createLiStyle(li)
             li.onmouseenter = () => {
-                li.style.background = '#BDBDBD'
+                this.hoverBackground(index)
             }
             li.onmouseout = () => {
-                li.style.background = this.ul.style.background
+                this.hoverBackground(index)
             }
             this.ul.appendChild(li)
         })
