@@ -31,13 +31,45 @@ class TypeaheadComponent extends HTMLElement  {
     }
     createListContainer() {
         this.ul = document.createElement('ul')
-        this.ul.style.width = "94%"
+        this.ul.style.width = "100%"
         this.ul.style.background = '#ecf0f1'
         this.ul.style.marginTop = 0
+        this.ul.style.padding = 0
+        this.ul.style.boxShadow =  '0 2px 4px rgba(0, 0, 0, 0.2)'
+        this.ul.style.boxSizing = this.ul.style.boxSizing || this.ul.style.mozBoxSizing || this.ul.style.webkitBoxSizing
+        this.ul.style.boxSizing = 'border-box'
         this.div.appendChild(this.ul)
     }
+    createLiStyle(li) {
+        li.style.margin = 0
+        li.style.marginBottom = '2%'
+        li.style.width = '100%'
+        li.style.background = this.ul.style.background
+        li.style.fontSize = window.innerHeight/15
+        li.style.listStyleType = 'none'
+        li.style.cursor = 'pointer'
+    }
+    renderList(items) {
+        this.ul.innerHTML = ""
+        items.forEach((item)=>{
+            const li = document.createElement('li')
+            li.innerHTML = `<span style="margin-left:5%;">${item}</span>`
+            li.onclick = (event) => {
+                this.text.value = item
+                this.renderList([])
+            }
+            this.createLiStyle(li)
+            li.onmouseenter = () => {
+                li.style.background = '#BDBDBD'
+            }
+            li.onmouseout = () => {
+                li.style.background = this.ul.style.background
+            }
+            this.ul.appendChild(li)
+        })
+    }
     connectedCallback() {
-
+        this.renderList(['hello','hello','hello','hello','hello'])
     }
 }
 customElements.define('typeahead-comp',TypeaheadComponent)
