@@ -59,16 +59,17 @@ class TypeaheadComponent extends HTMLElement  {
             this.onSelected(item)
         }
     }
-    hoverBackground(index) {
-        const li = this.ul.children[index]
-        console.log(li)
-        if(li.className == 'hover') {
-            li.className = ''
-            li.style.background = this.ul.style.background
-        }
-        else {
-            li.className = 'hover'
-            li.style.background = selectColor
+    focusOnList(index) {
+        const lis = this.ul.children
+        for(var i=0;i<lis.length;i++) {
+              const li = lis[i]
+              if(i == index) {
+                  li.style.backgroundColor = selectColor
+              }
+              else  {
+                  li.style.backgroundColor = this.ul.style.backgroundColor
+              }
+
         }
     }
     renderList(items) {
@@ -81,22 +82,63 @@ class TypeaheadComponent extends HTMLElement  {
             }
             this.createLiStyle(li)
             li.onmouseenter = () => {
-                this.hoverBackground(index)
-            }
-            li.onmouseout = () => {
-                this.hoverBackground(index)
+                this.focusOnList(index)
             }
             this.ul.appendChild(li)
         })
     }
+    onBlurText() {
+        this.renderList([])
+    }
     connectedCallback() {
         this.text.onkeyup = (event) => {
+            if([38,40,13].indexOf(event.keyCode) != -1) {
+                event.preventDefault()
+                return
+            }
             if(this.text.value.trim() == '') {
                 this.renderList([])
             }
             else {
                 const matchedItems = this.items.filter((item)=>item.toLowerCase().indexOf(this.text.value.toLowerCase()) != -1)
                 this.renderList(matchedItems)
+            }
+        }
+        const keyHandler = new KeyHandler(this.text,this.ul)
+        keyHandler.handleKey(this.focusOnList.bind(this),this.selectValue.bind(this),this.onBlurText.bind(this))
+    }
+}
+class KeyHandler {
+    constructor(keyElement,parentElement) {
+        this.parentElement = parentElement
+        this.keyElement = keyElement
+        this.resetIndex()
+    }
+    resetIndex() {
+        this.index = -1
+    }
+    handleKey(hovercb,selectcb,blurcb) {
+        this.keyElement.onkeydown = (event) => {
+            const n = this.parentElement.children.length
+            if(event.keyCode == 40) {
+                this.index++
+                if(this.index == n) {
+                    this.index = 0
+                }
+                hovercb(this.index)
+            }
+            if(event.keyCode == 38) {
+                this.index--
+                if(this.index<0) {
+                    this.index = n-1
+                }
+                hovercb(this.index)
+            }
+            if(event.keyCode == 13) {
+                if(this.parentElement && this.parentElement.children && this.parentElement.children.length > 0 && this.parentElement.children[this.index].children && this.parentElement.children[this.index].children.length > 0) {
+                    selectcb(this.parentElement.children[this.index].children[0].innerHTML)
+                    this.resetIndex()
+                }
             }
         }
     }
