@@ -6,6 +6,7 @@ class TypeaheadComponent extends HTMLElement  {
         this.initTextBox()
         this.createListContainer()
         this.items = JSON.parse(this.getAttribute('items'))
+        this.onSelected = eval(this.getAttribute('onselected'))
     }
     styleTextBorders() {
         this.text.style.borderBottomWidth = "0.2rem"
@@ -58,6 +59,9 @@ class TypeaheadComponent extends HTMLElement  {
             li.onclick = (event) => {
                 this.text.value = item
                 this.renderList([])
+                if(this.onSelected) {
+                    this.onSelected(item)
+                }
             }
             this.createLiStyle(li)
             li.onmouseenter = () => {
