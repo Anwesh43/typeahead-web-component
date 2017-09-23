@@ -92,7 +92,7 @@ class TypeaheadComponent extends HTMLElement  {
     }
     connectedCallback() {
         this.text.onkeyup = (event) => {
-            if([38,40,13].indexOf(event.keyCode) != -1) {
+            if([38,40,13,9].indexOf(event.keyCode) != -1) {
                 event.preventDefault()
                 return
             }
@@ -106,6 +106,14 @@ class TypeaheadComponent extends HTMLElement  {
         }
         const keyHandler = new KeyHandler(this.text,this.ul)
         keyHandler.handleKey(this.focusOnList.bind(this),this.selectValue.bind(this),this.onBlurText.bind(this))
+        window.onmousedown = (event) => {
+            if(event.target != this) {
+                this.renderList([])
+            }
+            else {
+                console.log("clicking on typeahead component")
+            }
+        }
     }
 }
 class KeyHandler {
@@ -139,6 +147,10 @@ class KeyHandler {
                     selectcb(this.parentElement.children[this.index].children[0].innerHTML)
                     this.resetIndex()
                 }
+            }
+            if(event.keyCode == 9) {
+                blurcb()
+                this.resetIndex()
             }
         }
     }
