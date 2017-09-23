@@ -5,6 +5,7 @@ class TypeaheadComponent extends HTMLElement  {
         this.setParentComponent(shadow)
         this.initTextBox()
         this.createListContainer()
+        this.items = JSON.parse(this.getAttribute('items'))
     }
     styleTextBorders() {
         this.text.style.borderBottomWidth = "0.2rem"
@@ -69,7 +70,15 @@ class TypeaheadComponent extends HTMLElement  {
         })
     }
     connectedCallback() {
-        this.renderList(['hello','hello','hello','hello','hello'])
+        this.text.onkeyup = (event) => {
+            if(this.text.value.trim() == '') {
+                this.renderList([])
+            }
+            else {
+                const matchedItems = this.items.filter((item)=>item.toLowerCase().indexOf(this.text.value.toLowerCase()) != -1)
+                this.renderList(matchedItems)
+            }
+        }
     }
 }
 customElements.define('typeahead-comp',TypeaheadComponent)
