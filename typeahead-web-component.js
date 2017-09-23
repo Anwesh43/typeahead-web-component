@@ -2,7 +2,9 @@ class TypeaheadComponent extends HTMLElement  {
     constructor() {
         super()
         const shadow = this.attachShadow({mode:'open'})
-        this.initTextBox(shadow)
+        this.setParentComponent(shadow)
+        this.initTextBox()
+        this.createListContainer()
     }
     styleTextBorders() {
         this.text.style.borderBottomWidth = "0.2rem"
@@ -12,16 +14,27 @@ class TypeaheadComponent extends HTMLElement  {
         this.text.style.borderTopWidth = 0
         this.text.style.outline = 'none'
     }
-    initTextBox(shadow) {
+    setParentComponent(shadow) {
+        this.div = document.createElement('div')
+        this.div.style.width = "50%"
+        this.div.style.marginLeft = "25%"
+        this.div.style.marginRight = "25%"
+        this.div.style.marginTop = "10%"
+        shadow.appendChild(this.div)
+    }
+    initTextBox() {
         this.text = document.createElement('input')
-        this.text.style.width = "50%"
-        this.text.style.marginLeft = "25%"
-        this.text.style.marginRight = "25%"
-        this.text.style.marginTop = "5%"
-        this.text.style.height = "15%"
+        this.text.style.width = "100%"
         this.text.style.fontSize = (window.innerHeight)*0.08
         this.styleTextBorders()
-        shadow.appendChild(this.text)
+        this.div.appendChild(this.text)
+    }
+    createListContainer() {
+        this.ul = document.createElement('ul')
+        this.ul.style.width = "94%"
+        this.ul.style.background = '#ecf0f1'
+        this.ul.style.marginTop = 0
+        this.div.appendChild(this.ul)
     }
     connectedCallback() {
 
