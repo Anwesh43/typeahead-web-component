@@ -14,9 +14,9 @@ class TypeaheadComponent extends HTMLElement  {
     }
     initTextBox(shadow) {
         this.text = document.createElement('input')
-        this.text.style.width = "70%"
-        this.text.style.marginLeft = "15%"
-        this.text.style.marginRight = "15%"
+        this.text.style.width = "50%"
+        this.text.style.marginLeft = "25%"
+        this.text.style.marginRight = "25%"
         this.text.style.marginTop = "5%"
         this.text.style.height = "15%"
         this.text.style.fontSize = (window.innerHeight)*0.08
